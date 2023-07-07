@@ -19,8 +19,8 @@
                @keyup.enter="handleQuery"
             />
          </el-form-item>
-         <el-form-item label="系统内置" prop="configType">
-            <el-select v-model="queryParams.configType" placeholder="系统内置" clearable>
+         <el-form-item label="系统内置" prop="innerConfig">
+            <el-select v-model="queryParams.innerConfig" placeholder="系统内置" clearable>
                <el-option
                   v-for="dict in sys_yes_no"
                   :key="dict.value"
@@ -102,9 +102,9 @@
          <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
          <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true" />
          <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
-         <el-table-column label="系统内置" align="center" prop="configType">
+         <el-table-column label="系统内置" align="center" prop="innerConfig">
             <template #default="scope">
-               <dict-tag :options="sys_yes_no" :value="scope.row.configType" />
+               <dict-tag :options="sys_yes_no" :value="scope.row.innerConfig" />
             </template>
          </el-table-column>
          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -141,8 +141,8 @@
             <el-form-item label="参数键值" prop="configValue">
                <el-input v-model="form.configValue" placeholder="请输入参数键值" />
             </el-form-item>
-            <el-form-item label="系统内置" prop="configType">
-               <el-radio-group v-model="form.configType">
+            <el-form-item label="系统内置" prop="innerConfig">
+               <el-radio-group v-model="form.innerConfig">
                   <el-radio
                      v-for="dict in sys_yes_no"
                      :key="dict.value"
@@ -188,7 +188,7 @@ const data = reactive({
     pageSize: 10,
     configName: undefined,
     configKey: undefined,
-    configType: undefined
+    innerConfig: undefined
   },
   rules: {
     configName: [{ required: true, message: "参数名称不能为空", trigger: "blur" }],
@@ -222,7 +222,7 @@ function reset() {
     configName: undefined,
     configKey: undefined,
     configValue: undefined,
-    configType: "1",
+    innerConfig: "1",
     remark: undefined
   };
   proxy.resetForm("configRef");
@@ -264,7 +264,7 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["configRef"].validate(valid => {
     if (valid) {
-      if (form.value.configId != undefined) {
+      if (form.value.configId) {
         updateConfig(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
