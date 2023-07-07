@@ -103,7 +103,7 @@
 
       <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
          <el-table-column type="selection" width="55" align="center" />
-         <el-table-column label="字典编号" align="center" prop="dictId" />
+         <el-table-column label="序号" width="55" align="center" prop="dictTypeId" />
          <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true"/>
          <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
             <template #default="scope">
@@ -209,9 +209,11 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询字典类型列表 */
 function getList() {
   loading.value = true;
-  listType(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
-    typeList.value = response.rows;
-    total.value = response.total;
+  listType(proxy.addDateRange(queryParams.value, dateRange.value)).then(res => {
+    const data = res.data || {}
+
+    typeList.value = data.rows;
+    total.value = data.total;
     loading.value = false;
   });
 }
@@ -251,7 +253,7 @@ function handleAdd() {
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.dictId);
-  single.value = selection.length != 1;
+  single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */

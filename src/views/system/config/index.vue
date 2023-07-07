@@ -202,9 +202,11 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询参数列表 */
 function getList() {
   loading.value = true;
-  listConfig(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
-    configList.value = response.rows;
-    total.value = response.total;
+  listConfig(proxy.addDateRange(queryParams.value, dateRange.value)).then(res => {
+    const data = res.data || {}
+
+    configList.value = data.rows;
+    total.value = data.total;
     loading.value = false;
   });
 }
@@ -220,7 +222,7 @@ function reset() {
     configName: undefined,
     configKey: undefined,
     configValue: undefined,
-    configType: "Y",
+    configType: "1",
     remark: undefined
   };
   proxy.resetForm("configRef");

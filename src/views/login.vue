@@ -25,9 +25,9 @@
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaEnabled">
+      <el-form-item prop="captchaCode" v-if="captchaEnabled">
         <el-input
-          v-model="loginForm.code"
+          v-model="loginForm.captchaCode"
           size="large"
           auto-complete="off"
           placeholder="验证码"
@@ -37,7 +37,7 @@
           <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          <img :src="picPath" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
@@ -78,17 +78,17 @@ const loginForm = ref({
   username: "admin",
   password: "admin123",
   rememberMe: false,
-  code: "",
-  uuid: ""
+  captchaCode: "",
+  captchaId: ""
 });
 
 const loginRules = {
   username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
   password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
-  code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+  captchaCode: [{ required: true, trigger: "change", message: "请输入验证码" }]
 };
 
-const codeUrl = ref("");
+const picPath = ref("");
 const loading = ref(false);
 // 验证码开关
 const captchaEnabled = ref(true);
@@ -127,10 +127,12 @@ function handleLogin() {
 
 function getCode() {
   getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+    const data = res.data || {}
+
+    captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled;
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img;
-      loginForm.value.uuid = res.uuid;
+      picPath.value = data.picPath;
+      loginForm.value.captchaId = data.captchaId;
     }
   });
 }
