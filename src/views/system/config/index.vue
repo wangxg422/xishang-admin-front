@@ -252,7 +252,7 @@ function resetQuery() {
 
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
-  selectList.value = selection;
+  selectList.value = selection || []
 }
 
 /** 新增按钮操作 */
@@ -269,7 +269,7 @@ function handleUpdate(row) {
   if (row && row.configId) {
     configId = row.configId
   } else {
-    if (selectList && selectList.value.length === 1) {
+    if (selectList.value.length === 1) {
       configId = selectList.value[0].configId
     }
   }
@@ -312,9 +312,10 @@ function handleDelete(row) {
     idList = [row.configId]
   } else {
     // 批量删除
-    if (selectList) {
-      idList = selectList.value.map(el => el.configId)
-    }
+    selectList.value.forEach(item => {
+      idList.push(item.configId)
+      nameList.push(item.configName)
+    })
   }
 
   proxy.$modal.confirm('是否确认删除配置 ' + nameList.join(",") + ' ？').then(function () {
