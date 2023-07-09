@@ -51,7 +51,7 @@
                type="success"
                plain
                icon="Edit"
-               :disabled="single"
+               :disabled="selectList.length !== 1"
                @click="handleUpdate"
                v-hasPermi="['system:dict:edit']"
             >修改</el-button>
@@ -61,7 +61,7 @@
                type="danger"
                plain
                icon="Delete"
-               :disabled="multiple"
+               :disabled="selectList.length === 0"
                @click="handleDelete"
                v-hasPermi="['system:dict:remove']"
             >删除</el-button>
@@ -88,7 +88,6 @@
 
       <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
          <el-table-column type="selection" width="55" align="center" />
-         <el-table-column label="字典编码" align="center" prop="dictCode" />
          <el-table-column label="字典标签" align="center" prop="dictLabel">
             <template #default="scope">
                <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{ scope.row.dictLabel }}</span>
@@ -184,12 +183,10 @@ const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
 
 const dataList = ref([]);
+const selectList = ref([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref([]);
-const single = ref(true);
-const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
 const defaultDictType = ref("");
@@ -225,7 +222,6 @@ const { queryParams, form, rules } = toRefs(data);
 
 /** 查询字典类型详细 */
 function getTypes(dictTypeId) {
-  console.log(dictTypeId)
   getType(dictTypeId).then(res => {
     const data = res.data || {}
 
@@ -260,13 +256,13 @@ function cancel() {
 /** 表单重置 */
 function reset() {
   form.value = {
-    dictCode: undefined,
+    dictDataId: undefined,
     dictLabel: undefined,
     dictValue: undefined,
     cssClass: undefined,
     listClass: "default",
-    dictSort: 0,
-    status: "0",
+    dictSort: 1,
+    status: "1",
     remark: undefined
   };
   proxy.resetForm("dataRef");
@@ -296,15 +292,21 @@ function handleAdd() {
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
-  ids.value = selection.map(item => item.dictCode);
-  single.value = selection.length != 1;
-  multiple.value = !selection.length;
+  selectList.value = selection || []
 }
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset();
-  const dictCode = row.dictCode || ids.value;
-  getData(dictCode).then(response => {
+
+  let dictDataId = ""
+  if (row && row.dictDataId) {
+    dictDataId = row.dictDataId
+  } else {
+    if (selectList.value.length === 1) {
+      dictDataId = selectList.value[0].dictDataId
+    }
+  }
+  getData(dictDataId).then(response => {
     form.value = response.data;
     open.value = true;
     title.value = "修改字典数据";
@@ -314,7 +316,7 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["dataRef"].validate(valid => {
     if (valid) {
-      if (form.value.dictCode != undefined) {
+      if (form.value.dictDataId) {
         updateData(form.value).then(response => {
           useDictStore().removeDict(queryParams.value.dictType);
           proxy.$modal.msgSuccess("修改成功");
@@ -334,9 +336,20 @@ function submitForm() {
 }
 /** 删除按钮操作 */
 function handleDelete(row) {
-  const dictCodes = row.dictCode || ids.value;
-  proxy.$modal.confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项？').then(function() {
-    return delData(dictCodes);
+  let idList = []
+  let nameList = []
+  if (row && row.dictDataId) {
+    idList.push(row.dictDataId)
+    nameList.push(row.dictLabel)
+  } else {
+    selectList.value.forEach(item => {
+      idList.push(item.dictDataId)
+      nameList.push(item.dictLabel)
+    })
+  }
+
+  proxy.$modal.confirm(`是否确认删除字典类型 ${queryParams.value.dictType} 中的字典数据 ${nameList.join(",")} ?`).then(function() {
+    return delData(idList);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
@@ -350,6 +363,6 @@ function handleExport() {
   }, `dict_data_${new Date().getTime()}.xlsx`);
 }
 
-getTypes(route);
+getTypes(route.params && route.params.dictTypeId);
 getTypeList();
 </script>
