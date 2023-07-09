@@ -55,13 +55,15 @@ export function resetForm(refName) {
 
 // 添加日期范围
 export function addDateRange(params, dateRange, start = "beginTime", end = "endTime") {
-    let search = params
     if (dateRange && dateRange.length === 2) {
-        search[start] = dateRange[0]
-        search[end] = dateRange[1]
+        return {
+            ...params,
+            [start]: dateRange[0],
+            [end]: dateRange[1]
+        }
     }
 
-    return search
+    return params
 }
 
 // 回显数据字典

@@ -5,7 +5,7 @@
             <el-select v-model="queryParams.dictType" style="width: 200px">
                <el-option
                   v-for="item in typeOptions"
-                  :key="item.dictId"
+                  :key="item.dictTypeId"
                   :label="item.dictName"
                   :value="item.dictType"
                />
@@ -197,8 +197,8 @@ const typeOptions = ref([]);
 const route = useRoute();
 // 数据标签回显样式
 const listClassOptions = ref([
-  { value: "default", label: "默认" }, 
-  { value: "primary", label: "主要" }, 
+  { value: "default", label: "默认" },
+  { value: "primary", label: "主要" },
   { value: "success", label: "成功" },
   { value: "info", label: "信息" },
   { value: "warning", label: "警告" },
@@ -224,26 +224,31 @@ const data = reactive({
 const { queryParams, form, rules } = toRefs(data);
 
 /** 查询字典类型详细 */
-function getTypes(dictId) {
-  getType(dictId).then(response => {
-    queryParams.value.dictType = response.data.dictType;
-    defaultDictType.value = response.data.dictType;
+function getTypes(dictTypeId) {
+  console.log(dictTypeId)
+  getType(dictTypeId).then(res => {
+    const data = res.data || {}
+
+    queryParams.value.dictType = data.dictType;
+    defaultDictType.value = data.dictType;
     getList();
   });
 }
 
 /** 查询字典类型列表 */
 function getTypeList() {
-  getDictOptionselect().then(response => {
-    typeOptions.value = response.data;
+  getDictOptionselect().then(res => {
+    typeOptions.value = res.data || []
   });
 }
 /** 查询字典数据列表 */
 function getList() {
   loading.value = true;
-  listData(queryParams.value).then(response => {
-    dataList.value = response.rows;
-    total.value = response.total;
+  listData(queryParams.value).then(res => {
+    const data = res.data || {}
+
+    dataList.value = data.rows;
+    total.value = data.total;
     loading.value = false;
   });
 }
@@ -345,6 +350,6 @@ function handleExport() {
   }, `dict_data_${new Date().getTime()}.xlsx`);
 }
 
-getTypes(route.params && route.params.dictId);
+getTypes(route);
 getTypeList();
 </script>

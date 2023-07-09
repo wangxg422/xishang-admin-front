@@ -209,7 +209,8 @@ const {queryParams, form, rules} = toRefs(data);
 /** 查询参数列表 */
 function getList() {
   loading.value = true;
-  listConfig(proxy.addDateRange(queryParams.value, dateRange.value)).then(res => {
+  const params = proxy.addDateRange(queryParams.value, dateRange.value)
+  listConfig(params).then(res => {
     const data = res.data || {}
 
     configList.value = data.rows || []

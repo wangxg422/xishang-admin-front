@@ -10,9 +10,9 @@ export function listType(query) {
 }
 
 // 查询字典类型详细
-export function getType(dictId) {
+export function getType(dictTypeId) {
   return request({
-    url: '/sys/dict/type/' + dictId,
+    url: '/sys/dict/type/' + dictTypeId,
     method: 'get'
   })
 }
@@ -54,7 +54,7 @@ export function refreshCache() {
 // 获取字典选择框列表
 export function optionselect() {
   return request({
-    url: '/sys/dict/type/optionselect',
+    url: '/sys/dict/type/list/all',
     method: 'get'
   })
 }
