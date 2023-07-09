@@ -175,8 +175,8 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询部门列表 */
 function getList() {
   loading.value = true;
-  listDept(queryParams.value).then(response => {
-    deptList.value = proxy.handleTree(response.data, "deptId");
+  listDept(queryParams.value).then(res => {
+    deptList.value = proxy.handleTree(res.data || [], "deptId");
     loading.value = false;
   });
 }
