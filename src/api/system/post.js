@@ -17,6 +17,13 @@ export function getPost(postId) {
   })
 }
 
+export function getPostOptions() {
+  return request({
+    url: '/sys/post/user/options',
+    method: 'get'
+  })
+}
+
 // 新增岗位
 export function addPost(data) {
   return request({

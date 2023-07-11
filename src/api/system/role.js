@@ -17,6 +17,13 @@ export function getRole(roleId) {
   })
 }
 
+export function getRoleOptions() {
+  return request({
+    url: '/sys/role/user/options',
+    method: 'get'
+  })
+}
+
 // 新增角色
 export function addRole(data) {
   return request({
