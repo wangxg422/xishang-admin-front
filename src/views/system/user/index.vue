@@ -112,7 +112,7 @@
                 type="success"
                 plain
                 icon="Edit"
-                :disabled="selectList.length === 1"
+                :disabled="selectList.length !== 1"
                 @click="handleUpdate"
                 v-hasPermi="['system:user:edit']"
             >修改
@@ -123,7 +123,7 @@
                 type="danger"
                 plain
                 icon="Delete"
-                :disabled="selectList.length > 0"
+                :disabled="selectList.length === 0"
                 @click="handleDelete"
                 v-hasPermi="['system:user:remove']"
             >删除
@@ -537,9 +537,21 @@ function resetQuery() {
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-  const userIds = row.userId || ids.value;
-  proxy.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项？').then(function () {
-    return delUser(userIds);
+  let idList = []
+  let nameList = []
+
+  if (row && row.userId) {
+    idList.push(row.userId)
+    nameList.push(row.userName)
+  } else {
+      selectList.value.forEach(item => {
+        idList.push(item.userId)
+        nameList.push(item.userName)
+      })
+  }
+
+  proxy.$modal.confirm('确认删除用户 ' + nameList.join(",") + ' ？').then(function () {
+    return delUser(idList);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
@@ -557,12 +569,11 @@ function handleExport() {
 /** 用户状态修改  */
 function handleStatusChange(row) {
   let text = row.status === "1" ? "启用" : "停用";
-  proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?').then(function () {
+  proxy.$modal.confirm('确认要' + text + '用户 ' + row.userName + ' 吗?').then(function () {
     return changeUserStatus(row.userId, row.status);
   }).then(() => {
     proxy.$modal.msgSuccess(text + "成功");
   }).catch(function () {
-    row.status = row.status === "1" ? "2" : "1";
   });
 }
 
@@ -592,14 +603,14 @@ function handleResetPwd(row) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     closeOnClickModal: false,
-    inputPattern: /^.{6,20}$/,
-    inputErrorMessage: "用户密码长度必须介于 6 和 20 之间",
+    inputPattern: /^.{5,20}$/,
+    inputErrorMessage: "用户密码长度必须介于 5 和 20 之间",
   }).then(({value}) => {
-    resetUserPwd(row.userId, value).then(response => {
-      proxy.$modal.msgSuccess("修改成功，新密码是：" + value);
-    });
+    resetUserPwd(row.userId, value).then(() => {
+      proxy.$modal.msgSuccess("重置成功");
+    })
   }).catch(() => {
-  });
+  })
 }
 
 /** 选择条数  */
