@@ -29,7 +29,7 @@ const useTagsViewStore = defineStore(
       },
       addCachedView(view) {
         if (this.cachedViews.includes(view.name)) return
-        if (!view.meta.noCache) {
+        if (view.meta.cached) {
           this.cachedViews.push(view.name)
         }
       },
