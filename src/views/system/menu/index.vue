@@ -105,6 +105,11 @@
         label="组件路径"
         :show-overflow-tooltip="true"
       ></el-table-column>
+      <el-table-column
+        prop="path"
+        label="跳转地址"
+        :show-overflow-tooltip="true"
+      ></el-table-column>
       <el-table-column prop="status" label="状态" width="80">
         <template #default="scope">
           <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
@@ -578,7 +583,7 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   proxy.$modal
-    .confirm('是否确认删除名称为"' + row.name + '"的数据项?')
+    .confirm('确认删除菜单 ' + row.title + ' ?')
     .then(function () {
       return delMenu(row.menuId);
     })
