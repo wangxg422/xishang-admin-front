@@ -6,18 +6,18 @@
       :inline="true"
       v-show="showSearch"
     >
-      <el-form-item label="菜单名称" prop="name">
+      <el-form-item label="菜单名称" prop="menuName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.menuName"
           placeholder="请输入菜单名称"
           clearable
           style="width: 200px"
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="菜单标题" prop="title">
+      <el-form-item label="菜单编码" prop="menuCode">
         <el-input
-          v-model="queryParams.title"
+          v-model="queryParams.menuCode"
           placeholder="请输入菜单名称"
           clearable
           style="width: 200px"
@@ -78,14 +78,14 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
       <el-table-column
-        prop="name"
+        prop="menuName"
         label="菜单名称"
         :show-overflow-tooltip="true"
         width="200"
       ></el-table-column>
       <el-table-column
-        prop="title"
-        label="菜单标题"
+        prop="menuCode"
+        label="菜单编码"
         :show-overflow-tooltip="true"
         width="160"
       ></el-table-column>
@@ -171,7 +171,7 @@
                 :data="menuOptions"
                 :props="{
                   value: 'menuId',
-                  label: 'title',
+                  label: 'menuName',
                   children: 'children',
                 }"
                 value-key="menuId"
@@ -237,13 +237,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="菜单名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入菜单名称" />
+            <el-form-item label="菜单名称" prop="menuName">
+              <el-input v-model="form.menuName" placeholder="请输入菜单名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="菜单标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入菜单标题" />
+            <el-form-item label="菜单编码" prop="menuCode">
+              <el-input v-model="form.menuCode" placeholder="请输入菜单标题" />
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="form.type !== 'F'">
@@ -445,13 +445,13 @@ const iconSelectRef = ref(null);
 const data = reactive({
   form: {},
   queryParams: {
-    name: undefined,
-    title: undefined,
+    menuName: undefined,
+    menuCode: undefined,
     hidden: undefined,
   },
   rules: {
-    name: [{ required: true, message: "菜单名称不能为空", trigger: "blur" }],
-    title: [{ required: true, message: "菜单标题不能为空", trigger: "blur" }],
+    menuName: [{ required: true, message: "菜单名称不能为空", trigger: "blur" }],
+    menuCode: [{ required: true, message: "菜单编码不能为空", trigger: "blur" }],
     sort: [{ required: true, message: "菜单顺序不能为空", trigger: "blur" }],
     path: [{ required: true, message: "路由地址不能为空", trigger: "blur" }],
   },
@@ -471,7 +471,7 @@ function getList() {
 function getMenuTree() {
   menuOptions.value = []
   listMenu().then((res) => {
-    const rootMenu = { menuId: "0", name: "rootMenu", title: "根菜单", children: [] }
+    const rootMenu = { menuId: "0", menuCode: "0", menuName: "根菜单", children: [] }
     rootMenu.children = proxy.handleTree(res.data || [], "menuId")
     menuOptions.value.push(rootMenu)
   })
@@ -486,8 +486,8 @@ function reset() {
   form.value = {
     menuId: undefined,
     parentId: "0",
-    name: undefined,
-    title: undefined,
+    menuName: undefined,
+    menuCode: undefined,
     icon: undefined,
     type: "M",
     sort: undefined,
@@ -583,7 +583,7 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   proxy.$modal
-    .confirm('确认删除菜单 ' + row.title + ' ?')
+    .confirm('确认删除菜单 ' + row.menuName + ' ?')
     .then(function () {
       return delMenu(row.menuId);
     })
