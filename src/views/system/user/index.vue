@@ -401,7 +401,7 @@ import {
   updateUser,
   addUser,
 } from "@/api/system/user";
-import {getDeptTreeSelect} from "@/api/system/dept";
+import {getDeptTreeOption} from "@/api/system/dept";
 import {getRoleOptions} from "@/api/system/role";
 import {getPostOptions} from "@/api/system/post";
 
@@ -497,7 +497,7 @@ watch(deptName, val => {
 
 /** 查询部门下拉树结构 */
 function getDeptTree() {
-  getDeptTreeSelect().then(res => {
+  getDeptTreeOption().then(res => {
     deptOptions.value = res.data || []
   })
 }
