@@ -42,3 +42,10 @@ export function delDept(deptId) {
     method: 'delete'
   })
 }
+
+export function getDeptTreeOption() {
+  return request({
+    url: '/sys/dept/tree',
+    method: 'get'
+  })
+}

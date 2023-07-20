@@ -125,11 +125,3 @@ export function updateAuthRole(data) {
     params: data
   })
 }
-
-// 查询部门下拉树结构
-export function deptTreeSelect() {
-  return request({
-    url: '/sys/dept/tree',
-    method: 'get'
-  })
-}
