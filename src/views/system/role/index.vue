@@ -297,7 +297,6 @@ const menuNodeAll = ref(false);
 const deptExpand = ref(true);
 const deptNodeAll = ref(false);
 const deptOptions = ref([]);
-const openDataScope = ref(false);
 const menuRef = ref(null);
 const deptRef = ref(null);
 
@@ -478,14 +477,14 @@ function getRoleMenuTreeselect(roleId) {
 /** 树权限（展开/折叠）*/
 function handleCheckedTreeExpand(value, type) {
   if (type === "menu") {
-    let treeList = menuOptions.value;
+    let treeList = menuOptions.value
     for (let i = 0; i < treeList.length; i++) {
-      menuRef.value.store.nodesMap[treeList[i].id].expanded = value;
+      menuRef.value.store.nodesMap[treeList[i].id].expanded = value
     }
   } else if (type === "dept") {
-    let treeList = deptOptions.value;
+    let treeList = deptOptions.value
     for (let i = 0; i < treeList.length; i++) {
-      deptRef.value.store.nodesMap[treeList[i].id].expanded = value;
+      deptRef.value.store.nodesMap[treeList[i].id].expanded = value
     }
   }
 }
@@ -493,9 +492,9 @@ function handleCheckedTreeExpand(value, type) {
 /** 树权限（全选/全不选） */
 function handleCheckedTreeNodeAll(value, type) {
   if (type === "menu") {
-    menuRef.value.setCheckedNodes(value ? menuOptions.value : []);
+    menuRef.value.setCheckedNodes(value ? menuOptions.value : [])
   } else if (type === "dept") {
-    deptRef.value.setCheckedNodes(value ? deptOptions.value : []);
+    deptRef.value.setCheckedNodes(value ? deptOptions.value : [])
   }
 }
 
